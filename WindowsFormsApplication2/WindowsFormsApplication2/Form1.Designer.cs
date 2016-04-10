@@ -43,6 +43,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBoxPhone = new System.Windows.Forms.PictureBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.buttonDltOption = new System.Windows.Forms.Button();
+            this.btnClrFld = new System.Windows.Forms.Button();
             this.addPhone = new System.Windows.Forms.Button();
             this.AddOption = new System.Windows.Forms.Button();
             this.textBoxAddOption = new System.Windows.Forms.TextBox();
@@ -213,6 +215,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.buttonDltOption);
+            this.tabPage2.Controls.Add(this.btnClrFld);
             this.tabPage2.Controls.Add(this.addPhone);
             this.tabPage2.Controls.Add(this.AddOption);
             this.tabPage2.Controls.Add(this.textBoxAddOption);
@@ -238,11 +242,32 @@
             this.tabPage2.UseVisualStyleBackColor = true;
             this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
             // 
+            // buttonDltOption
+            // 
+            this.buttonDltOption.Location = new System.Drawing.Point(153, 491);
+            this.buttonDltOption.Name = "buttonDltOption";
+            this.buttonDltOption.Size = new System.Drawing.Size(113, 65);
+            this.buttonDltOption.TabIndex = 19;
+            this.buttonDltOption.Text = "Удалить опцию";
+            this.buttonDltOption.UseVisualStyleBackColor = true;
+            this.buttonDltOption.Click += new System.EventHandler(this.buttonDltOption_Click);
+            // 
+            // btnClrFld
+            // 
+            this.btnClrFld.Location = new System.Drawing.Point(23, 491);
+            this.btnClrFld.Name = "btnClrFld";
+            this.btnClrFld.Size = new System.Drawing.Size(113, 65);
+            this.btnClrFld.TabIndex = 18;
+            this.btnClrFld.Text = "Очистить поля";
+            this.btnClrFld.UseVisualStyleBackColor = true;
+            this.btnClrFld.Click += new System.EventHandler(this.btnClrFld_Click);
+            // 
             // addPhone
             // 
-            this.addPhone.Location = new System.Drawing.Point(312, 507);
+            this.addPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.addPhone.Location = new System.Drawing.Point(312, 491);
             this.addPhone.Name = "addPhone";
-            this.addPhone.Size = new System.Drawing.Size(158, 49);
+            this.addPhone.Size = new System.Drawing.Size(158, 65);
             this.addPhone.TabIndex = 17;
             this.addPhone.Text = "Добавить телефон";
             this.addPhone.UseVisualStyleBackColor = true;
@@ -265,6 +290,7 @@
             this.textBoxAddOption.Name = "textBoxAddOption";
             this.textBoxAddOption.Size = new System.Drawing.Size(243, 29);
             this.textBoxAddOption.TabIndex = 15;
+            this.textBoxAddOption.TextChanged += new System.EventHandler(this.textBoxAddOption_TextChanged);
             // 
             // SaveBtnEdit
             // 
@@ -282,13 +308,16 @@
             this.textBoxEditPrice.Name = "textBoxEditPrice";
             this.textBoxEditPrice.Size = new System.Drawing.Size(225, 20);
             this.textBoxEditPrice.TabIndex = 13;
+            this.textBoxEditPrice.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxEditPrice_KeyPress);
             // 
             // textBoxEditPicture
             // 
+            this.textBoxEditPicture.AllowDrop = true;
             this.textBoxEditPicture.Location = new System.Drawing.Point(196, 158);
             this.textBoxEditPicture.Name = "textBoxEditPicture";
             this.textBoxEditPicture.Size = new System.Drawing.Size(225, 20);
             this.textBoxEditPicture.TabIndex = 12;
+            this.textBoxEditPicture.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBoxEditPicture_DragEnter);
             // 
             // textBoxEditProcessor
             // 
@@ -475,6 +504,8 @@
         private System.Windows.Forms.Button addPhone;
         private System.Windows.Forms.Button SaveFile;
         private System.Windows.Forms.Button ReturnPhone;
+        private System.Windows.Forms.Button btnClrFld;
+        private System.Windows.Forms.Button buttonDltOption;
     }
 }
 

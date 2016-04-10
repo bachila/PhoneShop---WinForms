@@ -127,6 +127,7 @@ namespace WindowsFormsApplication2
             };
 
 
+
             listBoxPhone.DataSource = phones;
             listBoxPhone.DisplayMember = "Name";
 
@@ -134,7 +135,7 @@ namespace WindowsFormsApplication2
             checkedListBoxEditOption.DisplayMember = "Name";
             #endregion
             #region tab2
-
+            AddOption.Enabled = false;
 
             #endregion
         }
@@ -149,8 +150,6 @@ namespace WindowsFormsApplication2
                 textBoxPrice.Text = textBoxEditPrice.Text = phone.Price.ToString();
                 textBoxOS.Text = textBoxEditOs.Text = phone.Os;
                 textBoxProc.Text = textBoxEditProcessor.Text = phone.Processor;
-                listBoxOption.DataSource = phone.Options;
-                listBoxOption.DisplayMember = "Name";
                 for (int i = 0; i < options.Count; i++)
                 {
                     checkedListBoxEditOption.SetItemChecked(i, false);
@@ -163,6 +162,9 @@ namespace WindowsFormsApplication2
                         }
                     }
                 }
+                listBoxOption.DataSource = phone.Options;
+                listBoxOption.DisplayMember = "Name";
+
             }
         }
 
@@ -187,7 +189,14 @@ namespace WindowsFormsApplication2
             Phone phone = (Phone)listBoxPhone.SelectedItem;
             phone.Name = textBoxEditModel.Text;
             phone.Os = textBoxEditOs.Text;
-            phone.Price = Convert.ToInt32(textBoxEditPrice.Text);
+            if (textBoxEditPrice.TextLength <= 0)
+            {
+               phone.Price = 0;
+            }
+            else
+            {
+                phone.Price = Convert.ToInt32(textBoxEditPrice.Text);
+            }
             phone.Processor = textBoxEditProcessor.Text;
             phone.ImgPath = textBoxEditPicture.Text;
             phone.Options.Clear();
@@ -229,12 +238,21 @@ namespace WindowsFormsApplication2
                     opt.Add(new Option(){Name = options[i].Name});
                 }
             }
+            int phoneTemp;
+            if (textBoxEditPrice.TextLength <= 0)
+            {
+                phoneTemp = 0;
+            }
+            else
+            {
+                phoneTemp = Convert.ToInt32(textBoxEditPrice.Text);
+            }
             phones.Add(new Phone()
             {
                 Name = textBoxEditModel.Text,
                 ImgPath = textBoxEditPicture.Text,
                 Os = textBoxEditOs.Text,
-                Price = Convert.ToInt32(textBoxEditPrice.Text),
+                Price = phoneTemp,
                 Processor = textBoxEditProcessor.Text,
                 Options = opt
             });
@@ -249,21 +267,99 @@ namespace WindowsFormsApplication2
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(fs, phones);
-                //XmlSerializer xmlSer = new XmlSerializer(typeof(Phone));
-                //xmlSer.Serialize(fs, phones);
+            }
+            using (FileStream fs = new FileStream(@"option.txt", FileMode.OpenOrCreate))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs, options);
             }
         }
 
         private void ReturnPhone_Click(object sender, EventArgs e)
         {
-            using (FileStream fs = new FileStream(@"phone.txt", FileMode.Open))
+            if (File.Exists(@"option.txt") && File.Exists(@"phone.txt"))
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                 phones = (BindingList<Phone>)formatter.Deserialize(fs);
-                listBoxPhone.DataSource = null;
-                listBoxPhone.DataSource = phones;
-                listBoxPhone.DisplayMember = "Name";
+                using (FileStream fs = new FileStream(@"option.txt", FileMode.OpenOrCreate))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    options = (BindingList<Option>)formatter.Deserialize(fs);
+                    //checkedListBoxEditOption.DataSource = null;
+                    //checkedListBoxEditOption.DataSource = options;
+                    //checkedListBoxEditOption.DataSource = "Name";
+                }
+                using (FileStream fs = new FileStream(@"phone.txt", FileMode.Open))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    phones = (BindingList<Phone>)formatter.Deserialize(fs);
+                    listBoxPhone.DataSource = null;
+                    listBoxPhone.DataSource = phones;
+                    listBoxPhone.DisplayMember = "Name";
+                    checkedListBoxEditOption.DataSource = null;
+                    checkedListBoxEditOption.DataSource = options;
+                    checkedListBoxEditOption.DisplayMember = "Name";
+                }
             }
+            else
+            {
+                MessageBox.Show("Файл не существует", "Для начала создайте файл", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void btnClrFld_Click(object sender, EventArgs e)
+        {
+            Phone phone = (Phone)listBoxPhone.SelectedItem;
+            var tab = tabPage2.Controls.OfType<TextBox>();
+            foreach (var item in tab)
+            {
+                item.Text = "";
+            }
+            for (int i = 0; i < options.Count; i++)
+            {
+                checkedListBoxEditOption.SetItemChecked(i, false);
+            }
+        }
+
+        private void textBoxEditPrice_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if ((e.KeyChar >= 47 && e.KeyChar <= 57) || e.KeyChar == 8)
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBoxAddOption_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxAddOption.TextLength <= 0)
+            {
+                AddOption.Enabled = false;
+            }
+            else
+            {
+                AddOption.Enabled = true;
+            }
+        }
+
+        private void buttonDltOption_Click(object sender, EventArgs e)
+        {
+            int a = checkedListBoxEditOption.SelectedIndex;
+            options.RemoveAt(a);
+            checkedListBoxEditOption.DataSource = null;
+            checkedListBoxEditOption.DataSource = options;
+            checkedListBoxEditOption.DisplayMember = "Name";
+        }
+
+
+        private void textBoxEditPicture_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.All;
+            var MyFiles = ((string[])e.Data.GetData(DataFormats.FileDrop));
+            var filePath = MyFiles[0];
+            textBoxEditPicture.Text = filePath;
+
         }
     }
 }
